@@ -423,6 +423,8 @@ def preview_certificate():
 
 @app.route("/delete_group/<group_id>",methods=["DELETE"])
 def delete_group(group_id):
+    # in frontend just send a string 'true' if u want to delete certi or 'false' if u donnt want
+    
     data = request.json
     flag=data.get("flag","false")
     if flag=="flase":
