@@ -172,43 +172,6 @@ def generate_temp(username,link,  startname, finalname,startlink, finallink, sta
     return img_byte_array
 
 
-
-# def certificate_group_create(organizationid, issuer,\
-#     groupname, type, imagelink, fontname, startname, finalname,\
-#     startlink, finallink, startqr, finalqr, startrank=None, finalrank=None):
-#     startname=[int(c) for c in startname.split(",")]
-#     finalname=[int(c) for c in finalname.split(",")]
-#     startlink=[int(c) for c in startlink.split(",")]
-#     finallink=[int(c) for c in finallink.split(",")]
-#     startqr=[int(c) for c in startqr.split(",")]
-#     finalqr=[int(c) for c in finalqr.split(",")]
-#     if startrank and finalrank:
-#         startrank=[int(c) for c in startrank.split(",")]
-#         finalrank=[int(c) for c in finalrank.split(",")]
-#     name_x,name_y=(startname[0]+finalname[0])/2,((startname[1]+finalname[1])/2)+(200*0.5)
-#     link_x,link_y=(startlink[0]+finallink[0])/2,((startlink[1]+finallink[1])/2)
-#     qr_x,qr_y=startqr[0],startqr[1]
-#     id = str(uuid.uuid4())
-#     current_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-#     payload={
-#         "_id":id,
-#         "date":current_date,
-#         "group_name":groupname,
-#         "type":type,
-#         "imagelink":imagelink,
-#         "issuer":issuer,
-#         "group_id":organizationid,
-#         "fontname":fontname,
-#         "name_x":name_x,
-#         "name_y":name_y,
-#         "link_x":link_x,
-#         "link_y":link_y,
-#         "qr_x":qr_x,
-#         "qr_y":qr_y
-#     }
-#     groups.insert_one(payload)
-#     return "group created for new event"
-
 def certificate_group_create(organizationid, issuer,\
     groupname, type, imagelink, fontname, startname, finalname,\
     startlink, finallink, startqr, finalqr, startrank=None, finalrank=None,email=None):
@@ -460,8 +423,16 @@ def preview_certificate():
 
 @app.route("/delete_group/<group_id>",methods=["DELETE"])
 def delete_group(group_id):
-    groups.delete_one({"_id":group_id})
-    return jsonify(msg="deletetd group")
+    data = request.json
+    flag=data.get("flag","false")
+    if flag=="flase":
+        groups.delete_one({"_id":group_id})
+        return jsonify(msg="deletetd group")
+    else:
+        certificates.delete_many({"group_id":group_id})
+        groups.delete_one({"_id":group_id})
+        return jsonify(msg="deleted groups with certificates")
+
 
 @app.route("/delete_cert/<cert_id>",methods=["DELETE"])
 def delete_cert(cert_id):
