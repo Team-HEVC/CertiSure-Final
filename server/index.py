@@ -436,8 +436,17 @@ def preview_certificate():
 
 @app.route("/delete_group/<group_id>",methods=["DELETE"])
 def delete_group(group_id):
-    groups.delete_one({"_id":group_id})
-    return jsonify(msg="deletetd group")
+    # in frontend just send a string 'true' if u want to delete certi or 'false' if u donnt want
+    data = request.json
+    flag=data.get("flag")
+    if flag=="false":
+        groups.delete_one({"_id":group_id})
+        return jsonify(msg="deletetd group")
+    else:
+        certificates.delete_many({"group_id":group_id})
+        groups.delete_one({"_id":group_id})
+        return jsonify(msg="deleted groups with certificates")
+
 
 @app.route("/delete_cert/<cert_id>",methods=["DELETE"])
 def delete_cert(cert_id):
