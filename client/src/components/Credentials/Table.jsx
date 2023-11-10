@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import API from "../../Axios";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const Table = ({ id, refreshData, tableData }) => {
+const Table = ({ id, refreshData, tableData, exportCSV }) => {
   const [areAllChecked, setAllChecked] = useState(false);
   const [checkboxItems, setCheckboxItems] = useState({});
   const [tableItems, setTableItems] = useState([]);
@@ -63,12 +63,14 @@ const Table = ({ id, refreshData, tableData }) => {
           </h3>
         </div>
         <div className="mt-3 md:mt-0">
-          <a
-            href="javascript:void(0)"
-            className="inline-block px-4 py-2  text-black duration-150 font-medium bg-slate-100 outline-1 rounded-lg md:text-sm"
+          <button
+            onClick={() => {
+              exportCSV();
+            }}
+            className="inline-block px-4 py-2 text-black duration-150 font-medium bg-slate-100 outline-1 rounded-lg md:text-sm"
           >
             Export
-          </a>
+          </button>
         </div>
       </div>
       <div className="mt-10 shadow-sm border rounded-lg overflow-x-auto">
