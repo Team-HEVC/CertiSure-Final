@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import API from "../../Axios";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const Table = ({ id, refreshData, tableData, exportCSV }) => {
+const Table = ({ id, refreshData, tableData }) => {
   const [areAllChecked, setAllChecked] = useState(false);
   const [checkboxItems, setCheckboxItems] = useState({});
   const [tableItems, setTableItems] = useState([]);
@@ -55,22 +55,20 @@ const Table = ({ id, refreshData, tableData, exportCSV }) => {
   };
 
   return (
-    <div className="max-w-screen-xl w-[1300px] px-4 md:px-8">
-      <div className="items-start justify-between md:flex">
+    <div className="max-w-screen-xl px-4 md:px-8">
+      <div className="items-start justify-between flex">
         <div className="max-w-lg">
-          <h3 className="text-gray-800 text-xl font-bold sm:text-2xl">
+          <h3 className="text-gray-800 mt-4 md:ml-0 md:mt-0 text-md font-bold sm:text-2xl">
             Certified Members
           </h3>
         </div>
         <div className="mt-3 md:mt-0">
-          <button
-            onClick={() => {
-              exportCSV();
-            }}
-            className="inline-block px-4 py-2 text-black duration-150 font-medium bg-slate-100 outline-1 rounded-lg md:text-sm"
+          <a
+            href="javascript:void(0)"
+            className="inline-block px-4 py-2  text-black duration-150 font-medium bg-slate-100 outline-1 rounded-lg md:text-sm"
           >
             Export
-          </button>
+          </a>
         </div>
       </div>
       <div className="mt-10 shadow-sm border rounded-lg overflow-x-auto">
