@@ -47,17 +47,17 @@ Installation
 
    cd [FileName]
 
-3. Install project dependencies using pip:
-
-   pip install -r requirements.txt
-
-4. Create a Virtual Environment:
+3. Create a Virtual Environment:
 
    python -m venv venv
 
-5. Activate the Virtual Environment
+4. Activate the Virtual Environment
    
    .\venv\Scripts\activate
+
+5. Install project dependencies using pip:
+
+   pip install -r requirements.txt
 
 6. Run the Flask Application
 
