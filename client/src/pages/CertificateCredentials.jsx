@@ -2,7 +2,6 @@ import Navbar from "../components/Navbar";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { saveAs } from "file-saver";
-import logo from "../assets/logo/dark/1.png";
 import VerificationDialog from "../components/VerificationDialog";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
@@ -22,37 +21,36 @@ const CertificateCredentials = () => {
     email: "",
     linkedinId: "",
     link: "",
+    twitter: "",
   });
+
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
+  );
+
+  const changeTheme = (para) => {
+    setTheme(para);
+  };
 
   const openDialog = () => {
     setDialogOpen(true);
   };
 
-  function getCurrentDateInFormat() {
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    const currentDate = new Date();
-    const day = currentDate.getDate();
-    const month = months[currentDate.getMonth()];
-    const year = currentDate.getFullYear();
-    const formattedDate = `${day} ${month} ${year}`;
+  const formatDate = (inputDate) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const formattedDate = new Date(inputDate).toLocaleDateString(
+      "en-US",
+      options
+    );
     return formattedDate;
-  }
+  };
 
   const navigateToLinkedIn = () => {
     window.open(credential.linkedinId, "_blank");
+  };
+
+  const navigateToTwitter = () => {
+    window.open(credential.twitter, "_blank");
   };
 
   const fetchData = async () => {
@@ -70,7 +68,9 @@ const CertificateCredentials = () => {
             payloadData.groupname
           }&organizationId=${
             payloadData.group_id
-          }&issueYear=${new Date().getFullYear()}&issueMonth=${new Date().getMonth()}&certUrl=${import.meta.env.VITE_BACKEND_URL}/credential/${id}&certId=${id}`;
+          }&issueYear=${new Date().getFullYear()}&issueMonth=${new Date().getMonth()}&certUrl=${
+            import.meta.env.VITE_BACKEND_URL
+          }/credential/${id}&certId=${id}`;
         } else {
           linkedinId = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${
             payloadData.groupname
@@ -78,16 +78,19 @@ const CertificateCredentials = () => {
             payloadData.groupname
           }&issueYear=${new Date().getFullYear()}&issueMonth=${
             new Date().getMonth() + 1
-          }&certUrl=${import.meta.env.VITE_BACKEND_URL}/credential/${id}&certId=${id}`;
+          }&certUrl=${
+            import.meta.env.VITE_BACKEND_URL
+          }/credential/${id}&certId=${id}`;
         }
         const newCredential = {
-          title: payloadData.groupname,
+          title: payloadData.groupname.toUpperCase(),
           recipient: payloadData.username,
           email: payloadData.email,
           description: `This credential was issued to ${payloadData.username} for participation in ${payloadData.groupname}`,
           linkedinId: linkedinId,
-          issueDate: getCurrentDateInFormat(),
+          issueDate: formatDate(payloadData.date),
           link: image.src,
+          twitter: `https://twitter.com/intent/tweet?text=Check%20out%20my%20new%20certificate!%20https%3A%2F%2Fcertisure.vercel.app%2Fcerdential%2F${id}%0A%0A%23certisure%20%23${credential.title}`,
         };
         setCredential(newCredential);
         setIsLoading(false);
@@ -113,7 +116,10 @@ const CertificateCredentials = () => {
   };
 
   const downloadImage = () => {
-    saveAs(`${import.meta.env.VITE_BACKEND_URL}/verify_image/${id}`, `${credential.recipient}.jpg`);
+    saveAs(
+      `${import.meta.env.VITE_BACKEND_URL}/verify_image/${id}`,
+      `${credential.recipient}.jpg`
+    );
     toast.info("Certificate Downloaded", {
       position: toast.POSITION.BOTTOM_RIGHT,
       autoClose: 3000,
@@ -122,11 +128,12 @@ const CertificateCredentials = () => {
 
   return (
     <div>
-      <Navbar />
+      <Navbar theme={theme} changeTheme={changeTheme} />
       <section className="py-10 flex gap-0 flex-col-reverse lg:flex-row lg:gap-2">
         <CredentialDetails
           isLoading={isLoading}
           navigateToLinkedIn={navigateToLinkedIn}
+          navigateToTwitter={navigateToTwitter}
           downloadImage={downloadImage}
           copyLink={copyLink}
           credential={credential}
@@ -136,7 +143,7 @@ const CertificateCredentials = () => {
           isLoading={isLoading}
           openDialog={openDialog}
           id={id}
-          logo={logo}
+          theme={theme}
           credential={credential}
         />
 

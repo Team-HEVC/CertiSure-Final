@@ -1,9 +1,9 @@
-import { Outlet, useNavigation } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import NavDash from "../components/Dashboard/NavDash";
 import Footerdash from "../components/Dashboard/Footerdash";
 
 const DashLayout = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigate();
 
   const isPageLoading = navigation.state === "loading";
   const value = "loading...";

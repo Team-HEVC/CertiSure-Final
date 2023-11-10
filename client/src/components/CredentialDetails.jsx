@@ -6,6 +6,7 @@ import { FaTwitterSquare, FaLinkedin } from "react-icons/fa";
 const CredentialDetails = ({
   isLoading,
   navigateToLinkedIn,
+  navigateToTwitter,
   downloadImage,
   copyLink,
   credential,
@@ -28,21 +29,15 @@ const CredentialDetails = ({
             </p>
             <div className="list-disc space-y-2">
               <p>
-                <span className=" font-semibold mr-2">
-                  Recipient:
-                </span>
+                <span className=" font-semibold mr-2">Recipient:</span>
                 <span>{credential.recipient}</span>
               </p>
               <p>
-                <span className=" font-semibold mr-2">
-                  Description:
-                </span>
+                <span className=" font-semibold mr-2">Description:</span>
                 <span>{credential.description}</span>
               </p>
               <p>
-                <span className=" font-semibold mr-2">
-                  Issue date:
-                </span>
+                <span className=" font-semibold mr-2">Issue date:</span>
                 <span>{credential.issueDate}</span>
               </p>
             </div>
@@ -70,7 +65,10 @@ const CredentialDetails = ({
                 Add to LinkedIn Profile
               </button>
 
-              <button className="flex justify-center items-center gap-3 mt-2 sm:mt-0 px-1 py-2 sm:w-1/2 lg:w-full w-full h-full text-white bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700">
+              <button
+                onClick={navigateToTwitter}
+                className="flex justify-center items-center gap-3 mt-2 sm:mt-0 px-1 py-2 sm:w-1/2 lg:w-full w-full h-full text-white bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700"
+              >
                 <FaTwitterSquare size="25px" />
                 <span>Share on Twitter</span>
               </button>

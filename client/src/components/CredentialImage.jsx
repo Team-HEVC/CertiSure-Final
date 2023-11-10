@@ -2,7 +2,7 @@
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
 
-const CredentialImage = ({ isLoading, openDialog, id, logo, credential }) => {
+const CredentialImage = ({ isLoading, openDialog, id, theme, credential }) => {
   return (
     <div className="px-5 mb-5 lg:w-2/3">
       <div className="mx-w-screen-md max-h-50 h-full w-full py-2 border rounded-lg">
@@ -59,7 +59,15 @@ const CredentialImage = ({ isLoading, openDialog, id, logo, credential }) => {
               <span className=" text-sm font-semibold flex flex-row justify-start sm:justify-center items-center">
                 Distributed By:
                 <Link to="/">
-                  <img src={logo} className="ml-2 h-5" alt="" />
+                  <img
+                    src={
+                      theme === "light"
+                        ? "https://i.ibb.co/JdMdT4Z/1.png"
+                        : "https://i.ibb.co/j5dVL0j/1.png"
+                    }
+                    className="ml-2 h-5"
+                    alt=""
+                  />
                 </Link>
               </span>
             </p>

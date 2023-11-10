@@ -37,8 +37,8 @@ const Groups = () => {
         </div>
       </div>
       {/* <div className="bg-white pb-10 flex flex-wrap items-center gap-8 py-5 lg:py-9 px-5 lg:px-14 mb-6"> */}
-      
-      <div className="bg-white pb-10 flex flex-wrap items-center justify-normal gap-8 md:gap-10 xl:gap-14 lg:justify-center xl:justify-start p-5 lg:p-8 xl:p-12 2xl:py-9 2xl:px-14 mb-6 m-auto ">
+
+      <div className="bg-white pb-10 flex flex-wrap items-center justify-normal gap-8 md:gap-10 xl:gap-14 lg:justify-center xl:justify-start p-5 lg:p-8 xl:p-12 2xl:py-9 2xl:px-14 mb-6">
         {data.map((item) => {
           return (
             <Card

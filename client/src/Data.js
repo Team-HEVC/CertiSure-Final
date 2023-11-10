@@ -1,15 +1,8 @@
-const cartTemplate = [
-  //   {
-  //     id: 6,
-  //     name: "Air Jordan Force 1",
-  //     price: 869,
-  //     image: "https://shoes-ecommerce-site.netlify.app/images/shoes/s6.svg",
-  //     inCart: 1,
-  //   },
-  {
+export const cartTemplate = {
+  default: {
     type: "0",
-    imagepath: "../assets/certificate/certificate1.png",
-    fontname: "Great Vibes",
+    imagelink: "",
+    fontname: "",
     startname: "",
     finalname: "",
     startlink: "",
@@ -19,9 +12,24 @@ const cartTemplate = [
     startrank: "",
     finalrank: "",
   },
-];
-
-export default cartTemplate;
+  template1Points: {
+    ox: 2000,
+    oy: 1414,
+  },
+  template1: {
+    type: "0",
+    imagelink: "https://i.ibb.co/PZFXKDY/uiuxworkshop.png",
+    fontname: "Great Vibes",
+    startname: "397,578",
+    finalname: "1618,734",
+    startlink: "780,1358",
+    finallink: "1892,1402",
+    startqr: "309,928",
+    finalqr: "969,1149",
+    startrank: "",
+    finalrank: "",
+  },
+};
 
 export const blogData = [
   {

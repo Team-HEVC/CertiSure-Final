@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 // import React from 'react'
+import { useState } from "react";
 import Footer from "../components/Footer";
 import Faq from "../components/LandingPage/Faq";
 import Feature1 from "../components/LandingPage/Feature1";
@@ -12,9 +13,16 @@ import Navbar from "../components/Navbar";
 import News from "./News";
 
 const LandingPage = () => {
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
+  );
+
+  const changeTheme = (para) => {
+    setTheme(para);
+  };
   return (
     <div>
-      <Navbar />
+      <Navbar theme={theme} changeTheme={changeTheme} />
       <Hero />
       <Logogrid />
       <Feature1 />
@@ -23,7 +31,7 @@ const LandingPage = () => {
       <StatsLand />
       {/* <News/> */}
       {/* <Faq/> */}
-      <Footer />
+      <Footer theme={theme} />
     </div>
   );
 };

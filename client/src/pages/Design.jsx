@@ -1,23 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import resolutiion from "../assets/base.png";
 import API from "../Axios";
+import { cartTemplate } from "../Data";
+import "react-loading-skeleton/dist/skeleton.css";
+import Skeleton from "react-loading-skeleton";
 
 const Design = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [points, setPoints] = useState({ ox: 0, oy: 0, rx: 0, ry: 0 });
-  const newData = useSelector((store) => store.template);
   const [temp, setTemp] = useState({ sx: 0, sy: 0, ex: 0, ey: 0 });
   const isDrawing = useRef(false);
   const startCoords = useRef({ x: 0, y: 0 });
   const endCoords = useRef({ x: 0, y: 0 });
-  const myEmail = localStorage.getItem("user") || "sumil@gmail.com";
+  const myEmail = localStorage.getItem("user");
   const [data, setData] = useState({
     organizationid: "",
     issuer: "",
@@ -64,8 +67,17 @@ const Design = () => {
 
   const changeCertificate = (e) => {
     const name = e.target.value;
-    console.log(newData[name]);
-    setData({ ...data, ...newData[name] });
+    console.log(cartTemplate[name]);
+    setData({ ...data, ...cartTemplate[name] });
+    setPoints({ ...points, ...cartTemplate[`${name}Points`] });
+    console.log(data, points);
+    if (name === "default") {
+      setIsLoaded(false);
+      setIsLoading(false);
+    } else {
+      setIsLoaded(true);
+      setIsLoading(true);
+    }
   };
 
   const handleChange = (e) => {
@@ -73,23 +85,33 @@ const Design = () => {
   };
   const handleImageUpload = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("image", e.target.files[0]);
     async function uploadImage() {
       try {
+        console.log(
+          `https://api.imgbb.com/1/upload?key=${
+            import.meta.env.VITE_REACT_APP_IMGBBKEY
+          }`
+        );
         const response = await axios({
           method: "post",
           url: `https://api.imgbb.com/1/upload?key=${
             import.meta.env.VITE_REACT_APP_IMGBBKEY
           }`,
-
           data: formData,
           headers: { "Content-Type": "multipart/form-data" },
         });
-
+        console.log(response);
         if (response.status === 200) {
           const imageUrl = response.data.data.url;
-          setData({ ...data, imagelink: imageUrl });
+          const image = new Image();
+          image.src = imageUrl;
+          image.onload = () => {
+            setData({ ...data, imagelink: imageUrl });
+            setIsLoaded(true);
+          };
           toast.success("Image Uploaded Successfully!", {
             position: toast.POSITION.BOTTOM_RIGHT,
           });
@@ -297,6 +319,7 @@ const Design = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    console.log(temp);
                     setData({
                       ...data,
                       startname: `${temp.sx},${temp.sy}`,
@@ -572,7 +595,7 @@ const Design = () => {
             <span className="ml-[570px]">size: min- 794 x 1123 pixels</span>
           </h2>
           <div className="w-[820px] h-[550px] mt-2 border-dashed border-2 border-green-400 bg-slate-100 flex justify-center items-center">
-            {!data.imagelink && (
+            {!isLoading && (
               <div className="flex justify-center items-center">
                 <div className="text-center">
                   <div className="mt-4 text-sm flex justify-center items-center leading-6 text-gray-600">
@@ -608,7 +631,7 @@ const Design = () => {
                 </div>
               </div>
             )}
-            {data.imagelink && (
+            {isLoading && (
               <div
                 id="image-container"
                 className=" cursor-crosshair"
@@ -619,11 +642,14 @@ const Design = () => {
                 }}
                 onClick={handleMouseClick}
               >
-                <img
-                  className="object-left-top object-fill w-full h-full absolute cursor-crosshair"
-                  src={data.imagelink}
-                  alt="Uploaded Image"
-                />
+                {!isLoaded && <Skeleton className="h-full" />}
+                {isLoaded && (
+                  <img
+                    className="object-left-top object-fill w-full h-full absolute cursor-crosshair"
+                    src={data.imagelink}
+                    alt="Uploaded Image"
+                  />
+                )}
               </div>
             )}
           </div>

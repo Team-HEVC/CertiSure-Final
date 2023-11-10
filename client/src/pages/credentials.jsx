@@ -21,7 +21,11 @@ const Credentials = () => {
 
   const getData = async () => {
     try {
-      const response = await API.get(`/get_certificate_by_email/${userid}`);
+      var path =
+        userid === null
+          ? `/get_all_certificate/${localStorage.getItem("user")}`
+          : `/get_certificate_by_email/${userid}`;
+      const response = await API.get(path);
       if (response.status === 200) {
         setRes(response.data);
       } else {
@@ -30,6 +34,34 @@ const Credentials = () => {
     } catch (err) {
       console.error("Error:", err);
     }
+  };
+
+  const downloadCSV = () => {
+    const columns = ["Username", "Email", "Groupname", "CertificateID", "Date"];
+    const formattedData = res.map((row) => ({
+      Username: row.username,
+      Email: row.email,
+      Groupname: row.group_name,
+      CertificateID: row._id,
+      Date: row.data,
+    }));
+    const csvContent = `${columns.join(" , ")}\n${formattedData
+      .map((row) => columns.map((col) => row[col]).join(" , "))
+      .join("\n")}`;
+    const csvDataUrl = `data:text/csv;charset=utf-8,${encodeURIComponent(
+      csvContent
+    )}`;
+
+    const link = document.createElement("a");
+    link.href = csvDataUrl;
+    link.download = "exported_data.csv";
+    document.body.appendChild(link);
+
+    // Trigger the click event to start the download
+    link.click();
+
+    // Remove the temporary link element
+    document.body.removeChild(link);
   };
 
   const handleFileChange = (e) => {
@@ -115,7 +147,10 @@ const Credentials = () => {
         <div className="w-[100%] items-end justify-end pr-5 pb-6 flex">
           <button
             onClick={() => setState(true)}
-            className="px-3 py-1.5 gap-1 justify-center items-center flex text-sm text-white duration-150 bg-[#1677FF] font-medium pb-2 rounded-lg hover:bg-indigo-500 active:shadow-lg "
+            disabled={userid === null}
+            className={`px-3 py-1.5 gap-1 justify-center items-center flex text-sm text-white duration-150 bg-[#1677FF] font-medium pb-2 rounded-lg hover:bg-indigo-500 active:shadow-lg ${
+              userid === null ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +169,12 @@ const Credentials = () => {
         </div>
       </div>
       <div className="bg-white py-10 flex justify-center items-center ">
-        <Table id={userid} refreshData={getData} tableData={res} />
+        <Table
+          id={userid}
+          refreshData={getData}
+          tableData={res}
+          exportCSV={downloadCSV}
+        />
       </div>
       {state ? (
         <div className="fixed inset-0 z-10 h-[700px]">

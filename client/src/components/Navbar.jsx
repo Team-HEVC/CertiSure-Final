@@ -1,13 +1,11 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 // import { motion } from "framer-motion"
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo/dark/1.png";
 
-const Navbar = () => {
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
-  );
+const Navbar = ({ theme, changeTheme }) => {
 
   useEffect(() => {
     localStorage.setItem("theme", theme);
@@ -17,9 +15,9 @@ const Navbar = () => {
 
   const handleToggle = (e) => {
     if (e.target.checked) {
-      setTheme("dark");
+      changeTheme("dark");
     } else {
-      setTheme("light");
+      changeTheme("light");
     }
   };
 
@@ -61,7 +59,7 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        <Link to="#" className="btn btn-ghost normal-case text-xl">
+        <Link to="/" className="btn btn-ghost normal-case text-xl">
           CertiSure
         </Link>
       </div>

@@ -6,12 +6,17 @@ import { HiViewList } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import API from "../../Axios";
+import DeleteCard from "./DeleteCard";
 
 const Card = ({ image, title, id, refreshData }) => {
   const navigate = useNavigate();
-  const deleteGroup = async () => {
+  console.log(id);
+  const deleteGroup = async (id, resp) => {
     try {
-      const response = await API.delete(`/delete_group/${id}`);
+      const data = { flag: resp };
+      const response = await API.delete(`/delete_group/${id}`, {
+        data,
+      });
       console.log(response);
       toast.success(`Group ${title} has been Successfully deleted`, {
         position: toast.POSITION.BOTTOM_RIGHT,
@@ -37,7 +42,7 @@ const Card = ({ image, title, id, refreshData }) => {
       <div className="flex flex-col justify-center">
         <div className="flex justify-start items-center">
           <h2 className=" font-semibold pl-4 py-4 text-xl text-left">
-            {title}
+            {title.toUpperCase()}
           </h2>
         </div>
         <div className="flex text-sm py-1 text-[#000000D9] bg-[#FAFAFA]">
@@ -51,12 +56,20 @@ const Card = ({ image, title, id, refreshData }) => {
             <p>View Credentials</p>
           </div>
           <div
-            onClick={deleteGroup}
+            onClick={() => {
+              document.getElementById(`${id}`).showModal();
+            }}
             className="flex justify-center items-center w-[50%] cursor-pointer"
           >
             <AiFillDelete />
             <p>Delete</p>
           </div>
+          <DeleteCard
+            key={id}
+            title={title}
+            deleteGroup={deleteGroup}
+            id={id}
+          />
         </div>
       </div>
     </div>
