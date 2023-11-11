@@ -177,7 +177,7 @@ const Credentials = () => {
         />
       </div>
       {state ? (
-        <div className="fixed inset-0 z-10 h-[700px]">
+        <div className="fixed inset-0 z-10 ">
           <div
             className="fixed inset-0 w-full h-full bg-black opacity-40"
             onClick={() => setState(false)}
@@ -206,12 +206,12 @@ const Credentials = () => {
                   </svg>
                 </button>
               </div>
-              <div className="space-y-2 p-4 pb-8 mt-3 text-[15.5px] leading-relaxed text-gray-500">
+              <div className="space-y-2 md:p-4 p-3 pt-2 md:pb-8 mt-0 md:mt-3 text-[15.5px] leading-relaxed text-gray-500">
                 <p className="ml-2 font-semibold">
                   How would you like to add recipient details?
                 </p>
               </div>
-              <ul className="mb-10 mx-4 flex gap-1">
+              <ul className="md:mb-10 mb-0 mx-4 flex md:gap-1 gap-3">
                 {radios.map((item, idx) => (
                   <li key={idx}>
                     <label className="block relative">
@@ -223,10 +223,10 @@ const Credentials = () => {
                         onChange={handleRadioChange}
                         className="peer sr-only"
                       />
-                      <div className="w-full p-5 cursor-pointer rounded-lg border bg-white shadow-sm ring-indigo-600 peer-checked:ring-2 duration-200">
+                      <div className="w-full p-2 md:p-5 cursor-pointer rounded-lg border bg-white shadow-sm ring-indigo-600 peer-checked:ring-2 duration-200">
                         <div className="flex flex-col justify-center items-center border-2 rounded-md hover:scale-105 transition duration-500 cursor-pointer">
-                          <img className=" w-56" src={item.image}></img>
-                          <p className="py-2 font-semibold text-base">
+                          <img className="w-32 md:w-56" src={item.image}></img>
+                          <p className="py-2 font-semibold text-xs md:text-base">
                             {item.title}
                           </p>
                         </div>
@@ -238,7 +238,7 @@ const Credentials = () => {
               </ul>
               {selected === 0 && (
                 <form action="" onSubmit={handleSubmit}>
-                  <div className="max-w-full px-20 mt-4 m-[19px]">
+                  <div className="max-w-full md:px-20 md:mt-4 mt-5 m-[19px]">
                     <div>
                       <label className="block pb-2 text-gray-500">
                         Recipient Name
@@ -251,7 +251,7 @@ const Credentials = () => {
                           id="username"
                           name="username"
                           onChange={handleChange}
-                          className="w-full p-1 ml-3 text-gray-500 outline-none bg-transparent"
+                          className="w-full p-1 md:ml-3 text-gray-500 outline-none bg-transparent"
                         />
                       </div>
                     </div>
@@ -289,8 +289,8 @@ const Credentials = () => {
                 </form>
               )}
               {selected === 1 && (
-                <div className="flex mb-6 gap-4 mt-14 flex-col justify-center items-center">
-                  <div className=" border-2">
+                <div className="flex mb-6 md:gap-4 mt-8 md:mt-14 flex-col justify-center items-center">
+                  <div className=" border-2 rounded-md">
                     <label
                       htmlFor="file"
                       className="cursor-pointer text-center p-4 md:p-8"
@@ -310,7 +310,7 @@ const Credentials = () => {
                         />
                       </svg>
                       {file ? (
-                        <p className="mt-3 text-gray-700 max-w-xs mx-auto">
+                        <p className="mt-3 p-3 text-gray-700 max-w-xs mx-6">
                           File has been Added
                         </p>
                       ) : (
@@ -340,7 +340,7 @@ const Credentials = () => {
                       });
                       handleUpload();
                     }}
-                    className="px-4 py-2 font-semibold text-indigo-600 bg-indigo-50 rounded-lg duration-150 hover:bg-indigo-100 active:bg-indigo-200"
+                    className="px-4 py-2 mt-5 md:mt-0 font-semibold text-indigo-600 bg-indigo-50 rounded-lg duration-150 hover:bg-indigo-100 active:bg-indigo-200"
                   >
                     Generate Certificate
                   </button>
