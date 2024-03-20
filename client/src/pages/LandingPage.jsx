@@ -13,16 +13,9 @@ import Navbar from "../components/Navbar";
 import News from "./News";
 
 const LandingPage = () => {
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
-  );
-
-  const changeTheme = (para) => {
-    setTheme(para);
-  };
   return (
     <div>
-      <Navbar theme={theme} changeTheme={changeTheme} />
+      <Navbar />
       <Hero />
       <Logogrid />
       <Feature1 />
@@ -31,7 +24,7 @@ const LandingPage = () => {
       <StatsLand />
       {/* <News/> */}
       {/* <Faq/> */}
-      <Footer theme={theme} />
+      <Footer />
     </div>
   );
 };

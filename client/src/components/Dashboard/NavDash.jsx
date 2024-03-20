@@ -297,7 +297,7 @@ const NavDash = () => {
           </label>
           <ul
             tabIndex={0}
-            className="mt-3 z-[1] p-2 text-[#5E6570]  shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+            className="mt-3 z-[999] p-2 text-[#5E6570]  shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
           >
             <li>
               <a className="justify-between">

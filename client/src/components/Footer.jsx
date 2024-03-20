@@ -2,7 +2,7 @@
 /* eslint-disable react/no-unknown-property */
 // import { useEffect, useState } from "react";
 
-const Footer = ({ theme }) => {
+const Footer = () => {
   const footerNavs = [
     {
       label: "Company",
@@ -80,11 +80,7 @@ const Footer = ({ theme }) => {
       <div className="gap-6 justify-between md:flex">
         <div className="flex-1">
           <div className="max-w-xs">
-            {theme === "light" ? (
-              <img src="https://i.ibb.co/JdMdT4Z/1.png" className="w-48" />
-            ) : (
-              <img src="https://i.ibb.co/j5dVL0j/1.png" className="w-48" />
-            )}
+            <img src="https://i.ibb.co/JdMdT4Z/1.png" className="w-48" />
             <p className="leading-relaxed mt-2 text-[15px]">
               Lorem Ipsum has been the industrys standard dummy text ever since
               the 1500s.
