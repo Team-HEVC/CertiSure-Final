@@ -1,7 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/no-unknown-property */
-// import { useEffect, useState } from "react";
-
 const Footer = () => {
   const footerNavs = [
     {
@@ -69,12 +65,6 @@ const Footer = () => {
     },
   ];
 
-  //   const [localTheme, setLocalTheme] = useState(localStorage.getItem("theme"));
-  //   console.log(localTheme);
-  //   useEffect(() => {
-  //     setLocalTheme(localStorage.getItem("theme"));
-  //   }, [theme]);
-
   return (
     <footer className="text-ascent bg-base-100 border-t px-4 py-5 md:px-28">
       <div className="gap-6 justify-between md:flex">
@@ -82,7 +72,7 @@ const Footer = () => {
           <div className="max-w-xs">
             <img src="https://i.ibb.co/JdMdT4Z/1.png" className="w-48" />
             <p className="leading-relaxed mt-2 text-[15px]">
-              Lorem Ipsum has been the industrys standard dummy text ever since
+              Lorem Ipsum has been the industry's standard dummy text ever since
               the 1500s.
             </p>
           </div>
@@ -120,7 +110,7 @@ const Footer = () => {
       </div>
       <div className="mt-8 py-6 border-t items-center justify-between sm:flex">
         <div className="mt-4 sm:mt-0">
-          &copy; 2022 Certisure All rights reserved.
+          &copy; {new Date().getFullYear()} Certisure All rights reserved.
         </div>
         <div className="mt-6 sm:mt-0">
           <ul className="flex items-center space-x-4">

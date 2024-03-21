@@ -1,9 +1,6 @@
-/* eslint-disable react/no-unknown-property */
-
 import { Link } from "react-router-dom";
 
-/* eslint-disable react/jsx-key */
-const Footerdash = () => {
+const FooterDash = () => {
   const footerNavs = [
     {
       href: "#",
@@ -124,4 +121,4 @@ const Footerdash = () => {
   );
 };
 
-export default Footerdash;
+export default FooterDash;

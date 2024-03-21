@@ -46,7 +46,7 @@ const Hero = () => {
                     {/* <img src="https://res.cloudinary.com/floatui/image/upload/c_pad,b_auto:predominant,fl_preserve_transparency/v1669333920/undraw_progressive_app_m-9-ms_oftfv5.jpg" className="max-w-xl" /> */}
                 </div>
             </div>
-        </section>
+        </section> 
     )
 }
 

@@ -86,35 +86,9 @@ const NavDash = () => {
         </svg>
       ),
     },
-    // {
-    //     name: "Visa",
-    //     description: " Trusted world leader in digital payment technology",
-    //     icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    //         <path d="M11.8832 8.24628L10.2798 15.7425H8.34041L9.94398 8.24628H11.8832ZM20.0422 13.0867L21.063 10.2717L21.6504 13.0867H20.0422ZM22.2067 15.7425H24L22.4334 8.24628H20.7792C20.4064 8.24628 20.0921 8.46243 19.953 8.79575L17.0431 15.7425H19.0799L19.4842 14.623H21.9719L22.2067 15.7425ZM17.1441 13.2952C17.1526 11.3169 14.4092 11.2073 14.4276 10.3233C14.4335 10.0547 14.6898 9.76859 15.2499 9.69542C15.5276 9.65967 16.2939 9.63067 17.1625 10.0309L17.5022 8.44068C17.0357 8.27191 16.4353 8.10938 15.6883 8.10938C13.7711 8.10938 12.4224 9.12773 12.4116 10.5872C12.3993 11.6664 13.375 12.2681 14.1086 12.6276C14.865 12.995 15.1184 13.2305 15.1147 13.5588C15.1094 14.0617 14.5116 14.2844 13.9549 14.2929C12.9793 14.308 12.4138 14.0292 11.9632 13.8191L11.6111 15.4624C12.065 15.6702 12.9013 15.8509 13.7672 15.8602C15.8054 15.8602 17.1381 14.8538 17.1441 13.2952ZM9.1121 8.24628L5.96986 15.7425H3.92017L2.37375 9.75999C2.28001 9.3921 2.19823 9.25688 1.91313 9.10143C1.44678 8.84819 0.676937 8.6113 0 8.46395L0.0458603 8.24628H3.34574C3.76606 8.24628 4.14424 8.52599 4.24051 9.01022L5.05739 13.3483L7.07471 8.24628H9.1121Z" fill="#1434CB" />
-    //     </svg>
-
-    // },
   ];
 
   const [state, setState] = useState(false);
-
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
-  );
-
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-    const localTheme = localStorage.getItem("theme");
-    document.querySelector("html").setAttribute("data-theme", localTheme);
-  }, [theme]);
-
-  const handleToggle = (e) => {
-    if (e.target.checked) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-  };
 
   return (
     <div className="navbar text-[#FFFFFF99] bg-[#001529]">
@@ -297,7 +271,7 @@ const NavDash = () => {
           </label>
           <ul
             tabIndex={0}
-            className="mt-3 z-[999] p-2 text-[#5E6570]  shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+            className="mt-3 z-[1] p-2 text-[#5E6570]  shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
           >
             <li>
               <a className="justify-between">

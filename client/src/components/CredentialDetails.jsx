@@ -2,11 +2,9 @@ import Skeleton from "react-loading-skeleton";
 import { BiCopyAlt, BiSolidCloudDownload } from "react-icons/bi";
 import { FaTwitterSquare, FaLinkedin } from "react-icons/fa";
 
-/* eslint-disable react/prop-types */
 const CredentialDetails = ({
   isLoading,
-  navigateToLinkedIn,
-  navigateToTwitter,
+  navigateToSocialMedia,
   downloadImage,
   copyLink,
   credential,
@@ -58,7 +56,7 @@ const CredentialDetails = ({
           ) : (
             <div className="sm:flex sm:flex-row lg:flex-col sm:justify-between sm:items-center sm:space-x-2 lg:space-x-0 lg:space-y-2">
               <button
-                onClick={navigateToLinkedIn}
+                onClick={() => navigateToSocialMedia(credential.linkedinId)}
                 className="flex justify-center items-center gap-2 px-1 py-2 sm:w-1/2 lg:w-full w-full h-full text-white bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700"
               >
                 <FaLinkedin size="25px" />
@@ -66,7 +64,7 @@ const CredentialDetails = ({
               </button>
 
               <button
-                onClick={navigateToTwitter}
+                onClick={() => navigateToSocialMedia(credential.twitter)}
                 className="flex justify-center items-center gap-3 mt-2 sm:mt-0 px-1 py-2 sm:w-1/2 lg:w-full w-full h-full text-white bg-indigo-600 rounded-lg duration-150 hover:bg-indigo-500 active:bg-indigo-700"
               >
                 <FaTwitterSquare size="25px" />
@@ -92,7 +90,7 @@ const CredentialDetails = ({
               <div className="flex gap-2 my-2">
                 <button
                   onClick={downloadImage}
-                  className="flex justify-center items-center space-x-2 w-full px-4 py-2  border rounded-lg duration-100 hover:border-indigo-600 active:shadow-lg"
+                  className="flex justify-center items-center space-x-2 w-full px-4 py-2  border rounded-lg duration-100 hover:border-indigo-600 hover:text-indigo-600 active:shadow-lg"
                 >
                   <span className="">
                     <BiSolidCloudDownload size="25px" />
@@ -103,7 +101,7 @@ const CredentialDetails = ({
                   onClick={() => {
                     copyLink();
                   }}
-                  className=" flex justify-center items-center space-x-2 w-full px-4 py-2  border rounded-lg duration-100 hover:border-indigo-600 active:shadow-lg"
+                  className=" flex justify-center items-center space-x-2 w-full px-4 py-2  border rounded-lg duration-100 hover:border-indigo-600 hover:text-indigo-600 active:shadow-lg"
                 >
                   <BiCopyAlt size="20px" /> <span>Copy Link</span>
                 </button>

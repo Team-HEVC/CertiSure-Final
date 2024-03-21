@@ -2,14 +2,15 @@
 /* eslint-disable react/no-unknown-property */
 import { useState } from "react";
 import Table from "../components/Credentials/Table";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { BsFillPersonFill } from "react-icons/bs";
 import { toast } from "react-toastify";
 import API from "../Axios";
 
 const Credentials = () => {
-  const id = useLocation();
-  var userid = id.state;
+  const params = useParams();
+  console.log("params", params);
+  var groupId = params?.id || null;
   const [res, setRes] = useState([]);
   const [state, setState] = useState(false);
   const [selected, setSelected] = useState(0);
@@ -22,9 +23,9 @@ const Credentials = () => {
   const getData = async () => {
     try {
       var path =
-        userid === null
+        groupId === null
           ? `/get_all_certificate/${localStorage.getItem("user")}`
-          : `/get_certificate_by_email/${userid}`;
+          : `/get_certificate_by_email/${groupId}`;
       const response = await API.get(path);
       if (response.status === 200) {
         setRes(response.data);
@@ -76,7 +77,7 @@ const Credentials = () => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const response = await API.post(`/upload/${userid}`, formData, {
+      const response = await API.post(`/upload/${groupId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -107,7 +108,7 @@ const Credentials = () => {
       try {
         const response = await API.post("/certificate", {
           ...user,
-          _id: userid,
+          _id: groupId,
         });
         getData();
         toast.success(
@@ -147,9 +148,9 @@ const Credentials = () => {
         <div className="w-[100%] items-end justify-end pr-5 pb-6 flex">
           <button
             onClick={() => setState(true)}
-            disabled={userid === null}
+            disabled={groupId === null}
             className={`px-2 md:px-3 py-1.5 gap-1 justify-center items-center flex text-sm text-white duration-150 bg-[#1677FF] font-medium pb-2 rounded-lg hover:bg-indigo-500 active:shadow-lg ${
-              userid === null ? "cursor-not-allowed" : "cursor-pointer"
+              groupId === null ? "cursor-not-allowed" : "cursor-pointer"
             }`}
           >
             <svg
@@ -170,7 +171,7 @@ const Credentials = () => {
       </div>
       <div className="bg-white pb-5 md:py-10">
         <Table
-          id={userid}
+          id={groupId}
           refreshData={getData}
           tableData={res}
           exportCSV={downloadCSV}

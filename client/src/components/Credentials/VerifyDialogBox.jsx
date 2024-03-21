@@ -1,10 +1,9 @@
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { useEffect, useState } from "react";
-import ChangingProgressProvider from "./ChangingProgressProvider";
+import { useCallback, useEffect, useState } from "react";
+import ChangingProgressProvider from "../ChangingProgressProvider";
 
-// eslint-disable-next-line react/prop-types, no-unused-vars
-const VerificationDialog = ({ isOpen, onClose, title, recipient }) => {
+const VerifyDialogBox = ({ isOpen, onClose, title, recipient }) => {
   const [progressStarted, setProgressStarted] = useState({
     p1: false,
     p2: false,
@@ -12,48 +11,36 @@ const VerificationDialog = ({ isOpen, onClose, title, recipient }) => {
     p4: false,
   });
 
+  const progressBarStyles = buildStyles({
+    pathTransitionDuration: 1,
+    pathColor: `#4F46E5`,
+    textColor: "#4F46E5",
+  });
+
+  const setProgress = useCallback((newProgress) => {
+    setProgressStarted((prevProgress) => ({ ...prevProgress, ...newProgress }));
+  }, []);
+
   useEffect(() => {
     if (isOpen) {
-      // Set your progressStarted state and timers here.
-      setProgressStarted({ ...progressStarted, p1: true });
+      setProgress({ p1: true });
       setTimeout(() => {
-        setProgressStarted({
-          ...progressStarted,
-          p1: false,
-          p2: true,
-          p3: true,
-        });
+        setProgress({ p1: false, p2: true, p3: true });
       }, 4000);
       setTimeout(() => {
-        setProgressStarted({
-          ...progressStarted,
-          p2: true,
-          p3: false,
-          p4: true,
-          p5: true,
-        });
+        setProgress({ p2: true, p3: false, p4: true, p5: true });
       }, 7000);
       setTimeout(() => {
-        setProgressStarted({
-          ...progressStarted,
-          p2: true,
-          p3: false,
-          p4: true,
-          p5: false,
-          p6: true,
-        });
+        setProgress({ p2: true, p3: false, p4: true, p5: false, p6: true });
       }, 10000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen, setProgress]);
 
   return (
     <div>
       <dialog id="my_modal_2" className="modal">
         <div className="modal-box ">
           <h3 className="font-bold text-lg mb-4 ">Credential verification</h3>
-          {/* <p className="py-4">Press ESC key or click outside to close</p> */}
-
           <div className="flex flex-row mb-2">
             <div className="flex justify-center items-center flex-col">
               {progressStarted.p1 === true ? (
@@ -93,9 +80,7 @@ const VerificationDialog = ({ isOpen, onClose, title, recipient }) => {
             </div>
 
             <div className="flex-col  px-4 flex  justify-center items-start">
-              <p className=" font-semibold  ">
-                Verifying the recipient
-              </p>
+              <p className=" font-semibold">Verifying the recipient</p>
               <p
                 className="text-sm text-gray-500 mt-1 "
                 style={
@@ -148,9 +133,7 @@ const VerificationDialog = ({ isOpen, onClose, title, recipient }) => {
               />
             </div>
             <div className="flex-col  px-4 flex  justify-center items-start">
-              <p className=" font-semibold ">
-                Verifying the issuer
-              </p>
+              <p className=" font-semibold ">Verifying the issuer</p>
               <p
                 className="text-sm text-gray-500 mt-2 "
                 style={
@@ -253,4 +236,4 @@ const VerificationDialog = ({ isOpen, onClose, title, recipient }) => {
   );
 };
 
-export default VerificationDialog;
+export default VerifyDialogBox;

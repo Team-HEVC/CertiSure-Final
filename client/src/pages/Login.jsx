@@ -3,7 +3,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import API from "../Axios";
 
-/* eslint-disable react/no-unknown-property */
 const Login = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({
@@ -17,10 +16,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await API.post("/login", user);
-      console.log(response);
       localStorage.setItem("access_token", response.data.token);
       localStorage.setItem("user", user.email);
       toast.success("Login successful. Access granted.", {
@@ -40,7 +37,6 @@ const Login = () => {
 
   return (
     <main className="w-full flex">
-      {/* <ToastBar /> */}
       <div className="relative flex-1 hidden items-center justify-center h-screen bg-gray-900 lg:flex">
         <div className="relative z-10 w-full max-w-md">
           <img

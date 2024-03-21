@@ -2,7 +2,7 @@
 import svg from "../../assets/group3.svg";
 import codecell from "../../assets/codecell.png";
 
-const Logogrid = () => {
+const LogoGrid = () => {
   return (
     <div className="py-14">
       <div className="max-w-screen-xl mx-auto px-4 md:px-8 flex justify-center items-center flex-col">
@@ -19,7 +19,10 @@ const Logogrid = () => {
         <div className="mt-12  flex justify-center items-center">
           <ul className="inline-grid grid-cols-3 gap-x-10 gap-y-6 md:gap-x-16 md:grid-cols-3 lg:grid-cols-3">
             <li className="flex justify-center items-center">
-              <img className="w-16 sm:w-20 object-fill" src="https://tseccodestorm.dev/images/logo.png" />
+              <img
+                className="w-16 sm:w-20 object-fill"
+                src="https://tseccodestorm.dev/images/logo.png"
+              />
             </li>
             <li className="flex justify-center items-center object-fill">
               <img className="w-[72px] sm:w-24 object-fill" src={codecell} />
@@ -34,4 +37,4 @@ const Logogrid = () => {
   );
 };
 
-export default Logogrid;
+export default LogoGrid;

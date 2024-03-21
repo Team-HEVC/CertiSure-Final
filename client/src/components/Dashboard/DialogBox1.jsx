@@ -26,9 +26,11 @@ const DialogBox1 = () => {
     <dialog id="my_modal_1" className="modal">
       <div className="modal-box">
         <h3 className="font-bold text-lg text-center">Create Group</h3>
-
         <div className="modal-action block mt-2 ">
           <form method="dialog">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
             <div className="">
               <label
                 htmlFor="organizationid"

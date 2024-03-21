@@ -1,27 +1,15 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-// import { motion } from "framer-motion"
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo/dark/1.png";
-import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const [LoggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const [LoggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    // console.log("this is token", token);
     if (token) setLoggedIn(true);
-    // localStorage.setItem("theme", theme);
-    // const localTheme = localStorage.getItem("theme");
-    // document.querySelector("html").setAttribute("data-theme", localTheme);
-  }, []);
-
-  const handleToggle = (e) => {
-    console.log("clicked");
-  };
+  }, [LoggedIn]);
 
   const redirect = () => {
     if (LoggedIn) {

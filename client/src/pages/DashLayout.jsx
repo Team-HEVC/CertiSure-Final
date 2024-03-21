@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import NavDash from "../components/Dashboard/NavDash";
-import Footerdash from "../components/Dashboard/Footerdash";
+import FooterDash from "../components/Dashboard/FooterDash";
 
 const DashLayout = () => {
   const navigation = useNavigate();
@@ -17,7 +17,7 @@ const DashLayout = () => {
           <Outlet context={{ value }} />
         )}
       </section>
-      <Footerdash />
+      <FooterDash />
     </>
   );
 };

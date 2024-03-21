@@ -1,36 +1,28 @@
-import Navbar from "../components/Navbar";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { saveAs } from "file-saver";
-import VerificationDialog from "../components/VerificationDialog";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
 import API from "../Axios";
 import CredentialDetails from "../components/CredentialDetails";
 import CredentialImage from "../components/CredentialImage";
+import Error from "../assets/Error.png";
+import VerifyDialogBox from "../components/Credentials/VerifyDialogBox";
 
 const CertificateCredentials = () => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [credential, setCredential] = useState({
     title: "",
     description: "",
     recipient: "",
     issueDate: "",
-    email: "",
     linkedinId: "",
     link: "",
     twitter: "",
   });
-
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
-  );
-
-  const changeTheme = (para) => {
-    setTheme(para);
-  };
 
   const openDialog = () => {
     setDialogOpen(true);
@@ -45,13 +37,9 @@ const CertificateCredentials = () => {
     return formattedDate;
   };
 
-  const navigateToLinkedIn = () => {
-    window.open(credential.linkedinId, "_blank");
-  };
-
-  const navigateToTwitter = () => {
-    window.open(credential.twitter, "_blank");
-  };
+  const navigateToSocialMedia = useCallback((url) => {
+    window.open(url, "_blank");
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -85,24 +73,22 @@ const CertificateCredentials = () => {
         const newCredential = {
           title: payloadData.groupname.toUpperCase(),
           recipient: payloadData.username,
-          email: payloadData.email,
           description: `This credential was issued to ${payloadData.username} for participation in ${payloadData.groupname}`,
           linkedinId: linkedinId,
           issueDate: formatDate(payloadData.date),
           link: image.src,
-          twitter: `https://twitter.com/intent/tweet?text=Check%20out%20my%20new%20certificate!%20https%3A%2F%2Fcertisure.vercel.app%2Fcerdential%2F${id}%0A%0A%23certisure%20%23${credential.title}`,
+          twitter: `https://twitter.com/intent/tweet?text=Check%20out%20my%20new%20certificate!%20https%3A%2F%2Fcertisure.vercel.app%2Fcerdential%2F${id}%0A%0A%23certisure%20%23${payloadData.groupname}`,
         };
         setCredential(newCredential);
         setIsLoading(false);
       };
     } catch (err) {
-      console.log(err);
+      setError(err.response.data.msg);
     }
   };
 
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const copyLink = async () => {
@@ -118,7 +104,7 @@ const CertificateCredentials = () => {
   const downloadImage = () => {
     saveAs(
       `${import.meta.env.VITE_BACKEND_URL}/verify_image/${id}`,
-      `${credential.recipient}.jpg`
+      `${credential.recipient}.webP`
     );
     toast.info("Certificate Downloaded", {
       position: toast.POSITION.BOTTOM_RIGHT,
@@ -126,14 +112,25 @@ const CertificateCredentials = () => {
     });
   };
 
+  if (error)
+    return (
+      <div className="max-w-screen flex justify-center items-center flex-col m-8">
+        <img src={Error} alt="error" className="w-[500px]"/>
+        <p className="text-2xl font-semibold md:text-3xl">{error}</p>
+        <p className="mt-4 mb-8 dark:text-gray-400">
+          We are unable to find any certificate associated with the provided
+          certificate id. If you think its a mistake contact us at
+          support@certisure.com
+        </p>
+      </div>
+    );
+
   return (
     <div>
-      <Navbar theme={theme} changeTheme={changeTheme} />
       <section className="py-10 flex gap-0 flex-col-reverse lg:flex-row lg:gap-2">
         <CredentialDetails
           isLoading={isLoading}
-          navigateToLinkedIn={navigateToLinkedIn}
-          navigateToTwitter={navigateToTwitter}
+          navigateToSocialMedia={navigateToSocialMedia}
           downloadImage={downloadImage}
           copyLink={copyLink}
           credential={credential}
@@ -143,11 +140,10 @@ const CertificateCredentials = () => {
           isLoading={isLoading}
           openDialog={openDialog}
           id={id}
-          theme={theme}
           credential={credential}
         />
 
-        <VerificationDialog
+        <VerifyDialogBox
           isOpen={isDialogOpen}
           onClose={() => setDialogOpen(false)}
           title={credential.title}
