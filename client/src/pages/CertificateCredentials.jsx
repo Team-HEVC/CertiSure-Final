@@ -4,8 +4,8 @@ import { saveAs } from "file-saver";
 import "react-loading-skeleton/dist/skeleton.css";
 import { toast } from "react-toastify";
 import API from "../Axios";
-import CredentialDetails from "../components/CredentialDetails";
-import CredentialImage from "../components/CredentialImage";
+import CredentialDetails from "../components/Credentials/CredentialDetails";
+import CredentialImage from "../components/Credentials/CredentialImage";
 import Error from "../assets/Error.png";
 import VerifyDialogBox from "../components/Credentials/VerifyDialogBox";
 

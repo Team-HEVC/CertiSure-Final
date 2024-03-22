@@ -2,7 +2,7 @@
 import svg from "../../assets/group3.svg";
 import codecell from "../../assets/codecell.png";
 
-const LogoGrid = () => {
+const Logogrid = () => {
   return (
     <div className="py-14">
       <div className="max-w-screen-xl mx-auto px-4 md:px-8 flex justify-center items-center flex-col">
@@ -37,4 +37,4 @@ const LogoGrid = () => {
   );
 };
 
-export default LogoGrid;
+export default Logogrid;

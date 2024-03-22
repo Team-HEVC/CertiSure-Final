@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import NavDash from "../components/Dashboard/NavDash";
-import FooterDash from "../components/Dashboard/FooterDash";
+import FooterDash from "../components/Dashboard/Footerdash";
 
 const DashLayout = () => {
   const navigation = useNavigate();

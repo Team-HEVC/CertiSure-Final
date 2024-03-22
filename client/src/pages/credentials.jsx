@@ -1,75 +1,65 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unknown-property */
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Table from "../components/Credentials/Table";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BsFillPersonFill } from "react-icons/bs";
 import { toast } from "react-toastify";
 import API from "../Axios";
 
 const Credentials = () => {
   const params = useParams();
-  console.log("params", params);
-  var groupId = params?.id || null;
+  const navigator = useNavigate();
+  const groupId = params?.id || null;
   const [res, setRes] = useState([]);
   const [state, setState] = useState(false);
   const [selected, setSelected] = useState(0);
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState({
     username: "",
     email: "",
   });
 
-  const getData = async () => {
-    try {
-      var path =
-        groupId === null
-          ? `/get_all_certificate/${localStorage.getItem("user")}`
-          : `/get_certificate_by_email/${groupId}`;
-      const response = await API.get(path);
-      if (response.status === 200) {
+  const getData = useCallback(
+    async (Id) => {
+      try {
+        setLoading(true);
+        var path =
+          groupId === null
+            ? `/get_all_certificate`
+            : `/get_certificate_by_group/${Id}`;
+        const response = await API.get(path, {
+          headers: {
+            Authorization: localStorage.getItem("access_token"),
+          },
+        });
         setRes(response.data);
-      } else {
-        console.error("Request failed with status", response.status);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      } catch (err) {
+        setLoading(false);
+        console.log(err);
+        toast.error(err?.response?.data?.msg);
+        if (err.response.status === 401) {
+          navigator("/login");
+        } else {
+          navigator("/error", {
+            state: {
+              statusCode: err.response.status,
+            },
+          });
+        }
       }
-    } catch (err) {
-      console.error("Error:", err);
-    }
-  };
+    },
+    [groupId]
+  );
 
-  const downloadCSV = () => {
-    const columns = ["Username", "Email", "Groupname", "CertificateID", "Date"];
-    const formattedData = res.map((row) => ({
-      Username: row.username,
-      Email: row.email,
-      Groupname: row.group_name,
-      CertificateID: row._id,
-      Date: row.data,
-    }));
-    const csvContent = `${columns.join(" , ")}\n${formattedData
-      .map((row) => columns.map((col) => row[col]).join(" , "))
-      .join("\n")}`;
-    const csvDataUrl = `data:text/csv;charset=utf-8,${encodeURIComponent(
-      csvContent
-    )}`;
-
-    const link = document.createElement("a");
-    link.href = csvDataUrl;
-    link.download = "exported_data.csv";
-    document.body.appendChild(link);
-
-    // Trigger the click event to start the download
-    link.click();
-
-    // Remove the temporary link element
-    document.body.removeChild(link);
-  };
+  useEffect(() => {
+    getData(groupId);
+  }, [groupId]);
 
   const handleFileChange = (e) => {
-    toast.success("CSV file Added", {
-      position: toast.POSITION.BOTTOM_RIGHT,
-      autoClose: 3000,
-    });
+    toast.success("CSV file Added");
     setFile(e.target.files[0]);
   };
 
@@ -80,17 +70,18 @@ const Credentials = () => {
       const response = await API.post(`/upload/${groupId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: localStorage.getItem("access_token"),
         },
       });
-      getData();
-      toast.success("Certificate Generated Successfully", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-        autoClose: 4000,
-      });
-    } catch (error) {
-      toast.error("Sorry, there was an issue while uploading file.", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      if (response?.data?.data !== null) {
+        setRes(response.data.data);
+      }
+      toast.success("Certificate Generated Successfully");
+    } catch (err) {
+      toast.error("Sorry, there was an issue while uploading file.");
+      if (err.response.status === 401) {
+        navigator("/login");
+      }
     }
   };
 
@@ -106,22 +97,27 @@ const Credentials = () => {
     e.preventDefault();
     const generateCertificate = async () => {
       try {
-        const response = await API.post("/certificate", {
-          ...user,
-          _id: groupId,
-        });
-        getData();
-        toast.success(
-          `Certificate of ${user.username} Generated Successfully`,
+        const response = await API.post(
+          "/generate_certificate",
           {
-            position: toast.POSITION.BOTTOM_RIGHT,
+            ...user,
+            _id: groupId,
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("access_token"),
+            },
           }
         );
+        if (response?.data?.data !== null) {
+          setRes(response.data.data);
+        }
+        toast.success(`Certificate of ${user.username} Generated Successfully`);
       } catch (err) {
-        console.log(err);
-        toast.error("Sorry, there was an issue.", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-        });
+        toast.error("Sorry, there was an issue while uploading file.");
+        if (err.response.status === 401) {
+          navigator("/login");
+        }
       }
     };
     generateCertificate();
@@ -131,21 +127,21 @@ const Credentials = () => {
   const radios = [
     {
       image:
-        "https://app.certifier.io/static/media/manual-mode.2de646831b072af6a90c.png",
+        "https://res.cloudinary.com/deohymauz/image/upload/v1711101691/add-recipients_gogpes.png",
       title: "Upload Manually",
     },
     {
       image:
-        "https://app.certifier.io/static/media/spreadsheet-mode.2b142e383d3afc95a9e6.png",
+        "https://res.cloudinary.com/deohymauz/image/upload/v1711101691/upload-recipients_oqy9wb.png",
       title: "Upload via spreadsheet",
     },
   ];
 
   return (
     <div className="flex flex-col px-4 md:px-24 py-4 gap-4 text-black bg-[#F0F2F5]">
-      <div className=" h-28 rounded-lg items-end bg-white flex">
-        <div className="w-[10%]] font-bold text-xl pl-5 pb-6">Credentials</div>
-        <div className="w-[100%] items-end justify-end pr-5 pb-6 flex">
+      <div className="rounded-lg bg-white flex justify-between items-center py-3 px-5 ">
+        <div className="w-[10%] font-bold text-xl">Credentials</div>
+        <div className="w-[100%] items-end justify-end flex">
           <button
             onClick={() => setState(true)}
             disabled={groupId === null}
@@ -169,12 +165,12 @@ const Credentials = () => {
           </button>
         </div>
       </div>
-      <div className="bg-white pb-5 md:py-10">
+      <div className="bg-white pb-5 md:py-10 ">
         <Table
           id={groupId}
           refreshData={getData}
           tableData={res}
-          exportCSV={downloadCSV}
+          loading={loading}
         />
       </div>
       {state ? (
@@ -335,10 +331,7 @@ const Credentials = () => {
                   <button
                     onClick={() => {
                       setState(false);
-                      toast.success("🔄 Processing your CSV file...", {
-                        position: toast.POSITION.BOTTOM_RIGHT,
-                        autoClose: 2000,
-                      });
+                      toast.success("🔄 Processing your CSV file...");
                       handleUpload();
                     }}
                     className="px-4 py-2 mt-5 md:mt-0 font-semibold text-indigo-600 bg-indigo-50 rounded-lg duration-150 hover:bg-indigo-100 active:bg-indigo-200"

@@ -9,7 +9,7 @@ const Card = ({ image, title, id, deleteGroup }) => {
     <div className="rounded-lg min-w-[250px] sm:w-[47%] lg:w-[47%] xl:w-[30%]  border-2 ">
       <figure className="bg-[#F0F0F0] sm:h-[250px] md:h-[300px] lg:h-[350px] xl:h-[300px] 3xl:h-[450px] ">
         <img
-          className="sm:hover:scale-110 duration-200 p-5 lg:p-7 2xl:p-8 w-full h-full object-fill"
+          className="p-5 lg:p-7 2xl:p-8 w-full h-full object-fill"
           src={image}
           alt="Shoes"
         />

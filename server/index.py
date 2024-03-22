@@ -59,8 +59,6 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app) 
 
-
-
 ################# helper functions ###################
 
 
@@ -100,9 +98,6 @@ def generate_certificate_image(certificate_uuid):
     qr.make(fit=True)
     qr_img = qr.make_image(fill_color="black", back_color="white")
     img.paste(qr_img, (int(group_detials["qr_x"]), int(group_detials["qr_y"])))
-
-    # img.show()
-    # img.show()
     img = img.convert('RGB')
     img_byte_array = io.BytesIO()
     img.save(img_byte_array, format="JPEG")
@@ -120,7 +115,7 @@ def send_mail(name,email,certificate_uuid):
         )
         msg.html=render_template("mail.html",name=name,certificate_uuid=certificate_uuid)
         # Add more context to the message
-        mail.send(msg)
+        # mail.send(msg)
         print("Email message sent")
     except Exception as e:
         print(f'Error: {str(e)}')
@@ -218,8 +213,6 @@ def upload_image(i=None):
     image = client.upload(file=fl)
     return image.url
 
-
-
 def verify_certificate_uuid(certificate_uuid):
     data = certificates.find_one({"_id": certificate_uuid})
     if data:
@@ -261,21 +254,10 @@ def upload_img():
     img=upload_image()
     return jsonify(img)
 
-
 # test
 @app.route("/", methods=["GET"])
 def root():
     return jsonify({"msg": "works"})
-
-
-# get groups test
-@app.route("/groups", methods=["GET"])
-def group():
-    data = groups.find()
-    data_list = [i for i in data]
-    data_list_reversed = data_list[::-1]
-    return jsonify(data_list_reversed)
-
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -292,106 +274,106 @@ def login():
 
 @app.route("/signup", methods=["POST"])
 def signup():
-    data = request.json
-    email = data.get("email", None)
-    password = data.get("password", None)
-    username = data.get("username", None)
-    phno = data.get("phno", None)
-    pass_hash = generate_password_hash(password)
-    payload = {
-        "_id": str(uuid.uuid4()),
-        "email": email,
-        "password": pass_hash,
-        "phone": phno,
-        "username": username,
-    }
-    users.insert_one(payload)
-    if users.find_one({"email": email}):
-        return jsonify({"msg": "inserted with sucess", "payload": payload}), 201
+    try:
+        data = request.json
+        print(data)
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        email = data.get("email")
+        password = data.get("password")
+        username = data.get("name")
+        phno = data.get("number")
+
+        if not email or not password or not username or not phno:
+            return jsonify({'error': 'Missing required fields'}), 400
+        if users.find_one({"email": email}):
+            return jsonify({'error': 'Email already in use'}), 400
+        pass_hash = generate_password_hash(password)
+        now = datetime.now()
+        payload = {
+            "_id": str(uuid.uuid4()),
+            "email": email,
+            "password": pass_hash,
+            "phone": phno,
+            "username": username,
+            "created_at": now,
+            "updated_at": now,
+        }
+        users.insert_one(payload)
+        return jsonify({"msg": "User created successfully"}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route("/create_group", methods=["POST"])
+@jwt_required()
 def create_group():
-    data = request.json
-    organizationid = data.get("organizationid")
-    issuer = data.get("issuer")
-    groupname = data.get("groupname")
-    type = data.get("type")
-    imagelink = data.get("imagelink")
-    fontname = data.get("fontname")
-    startname = data.get("startname")
-    finalname = data.get("finalname")
-    startlink = data.get("startlink")
-    finallink = data.get("finallink")
-    startqr = data.get("startqr")
-    finalqr = data.get("finalqr")
-    startrank = data.get("startrank",None)
-    finalrank = data.get("finalrank",None)
-    email=data.get("email",None)
-    print(finalname)
-    res= certificate_group_create(organizationid, issuer,\
-    groupname, type, imagelink, fontname, startname, finalname,\
-    startlink, finallink, startqr, finalqr, startrank, finalrank,email)
-    data = groups.find_one({"group_name":groupname})
-    if data:
-        return jsonify(msg=res)
-    else:
-        return jsonify(msg="error occured")
-    
+    try:
+        data = request.json
+        organizationid = data.get("organizationid")
+        issuer = data.get("issuer")
+        groupname = data.get("groupname")
+        type = data.get("type")
+        imagelink = data.get("imagelink")
+        fontname = data.get("fontname")
+        startname = data.get("startname")
+        finalname = data.get("finalname")
+        startlink = data.get("startlink")
+        finallink = data.get("finallink")
+        startqr = data.get("startqr")
+        finalqr = data.get("finalqr")
+        startrank = data.get("startrank",None)
+        finalrank = data.get("finalrank",None)
+        email=get_jwt_identity()
+        res= certificate_group_create(organizationid, issuer,\
+        groupname, type, imagelink, fontname, startname, finalname,\
+        startlink, finallink, startqr, finalqr, startrank, finalrank,email)
+        data = groups.find_one({"group_name":groupname})
+        if data:
+            return jsonify(msg=res)
+        else:
+            return jsonify(msg="error occurred")
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-@app.route("/get_user_groups/<email>", methods=["GET"])
-def get_group(email):
-    page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 9, type=int)
-    
-    skips = per_page * (page - 1)
+@app.route("/get_user_groups", methods=["GET"])
+@jwt_required()
+def get_group():
+    try:
+        email = get_jwt_identity()
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 9, type=int)
+        skips = per_page * (page - 1)
 
-    total_groups = groups.count_documents({"email": email})
-    total_pages = (total_groups // per_page) + (1 if total_groups % per_page > 0 else 0)
+        total_groups = groups.count_documents({"email": email})
+        total_pages = (total_groups // per_page) + (1 if total_groups % per_page > 0 else 0)
 
-    payload = groups.find({"email": email}).skip(skips).limit(per_page)
-    payload = [i for i in payload]
+        payload = groups.find({"email": email}).skip(skips).limit(per_page)
+        payload = [i for i in payload]
 
-    return jsonify({
-        'total_pages': total_pages,
-        'current_page': page,
-        'groups': payload
-    })
-
-# @app.route("/get_user_groups/<email>",methods=["GET"])
-# def get_group(email):
-#     payload =groups.find({"email":email})
-#     payload =[ i for i in payload]
-#     return jsonify(payload)
+        return jsonify({
+            'total_pages': total_pages,
+            'current_page': page,
+            'groups': payload
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 # to get list of all certificate generated by user
-@app.route("/get_all_certificate/<email>",methods=["GET"])
-def get_cer(email):
-    group_ids =[entry.get("_id") for entry in groups.find({"email": email})]
-    all_certificates = []
-    for group_id in group_ids:
-        data = certificates.find({"group_id": group_id})
-        certificate_list = list(data)
-        certificate_list.reverse()
-        all_certificates.extend(certificate_list)
-    return jsonify(all_certificates)
-
-# to generate a certificate
-@app.route("/certificate", methods=["POST"])
-def generate_certificate():
-    data = request.json
-    username = data.get("username", None)
-    email = data.get("email", None)
-    g_id = data.get("_id", None)
-    certificate_uuid = generate_new_certificate(g_id,username,email)
-    if certificates.find_one({"_id": certificate_uuid}):
-        img_byte_arr = generate_certificate_image(certificate_uuid)
-        img = Image.open(img_byte_arr)
-        # img.show()
-        pdf_buffer = io.BytesIO()
-        img.save(pdf_buffer, "PDF", resolution=100.0, save_all=True, append_images=[])
-        pdf_buffer.seek(0)
-        return send_file(pdf_buffer, mimetype="application/pdf")
-
+@app.route("/get_all_certificate",methods=["GET"])
+@jwt_required()
+def get_cer():
+    try:
+        email = get_jwt_identity()
+        group_ids =[entry.get("_id") for entry in groups.find({"email": email})]
+        all_certificates = []
+        for group_id in group_ids:
+            data = certificates.find({"group_id": group_id})
+            certificate_list = list(data)
+            certificate_list.reverse()
+            all_certificates.extend(certificate_list)
+        return jsonify(all_certificates)
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 @app.route("/verify/<certificate_uuid>", methods=["GET"])
 def verify_certificate(certificate_uuid):
@@ -445,52 +427,95 @@ def preview_certificate():
     return jsonify(pdf=pdf_base64)
 
 @app.route("/delete_group/<group_id>",methods=["DELETE"])
+@jwt_required()
 def delete_group(group_id):
-    # in frontend just send a string 'true' if u want to delete certi or 'false' if u donnt want
-    data = request.json
-    flag=data.get("flag")
-    if flag=="false":
-        groups.delete_one({"_id":group_id})
-        return jsonify(msg="deletetd group")
-    else:
-        certificates.delete_many({"group_id":group_id})
-        groups.delete_one({"_id":group_id})
-        return jsonify(msg="deleted groups with certificates")
-
+    try:
+        email=get_jwt_identity()
+        data = request.json
+        flag=data.get("flag")
+        groupEmail=groups.find_one({"_id":group_id})['email']
+        if email != groupEmail:
+            return jsonify({'error': 'Unauthorized access'}), 403
+        if flag=="false":
+            groups.delete_one({"_id":group_id})
+            return jsonify(msg="deletetd group")
+        else:
+            certificates.delete_many({"group_id":group_id})
+            groups.delete_one({"_id":group_id})
+            return jsonify(msg="deleted groups with certificates")
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 @app.route("/delete_cert/<cert_id>",methods=["DELETE"])
+@jwt_required()
 def delete_cert(cert_id):
-    certificates.delete_one({"_id":cert_id})
-    return jsonify(msg="deletetd certificate")
+    try:
+        email=get_jwt_identity()
+        groupId=certificates.find_one({"_id":cert_id})['group_id']
+        groupEmail=groups.find_one({"_id":groupId})['email']
+        if email != groupEmail:
+            return jsonify({'error': 'Unauthorized access'}), 403
+        certificates.delete_one({"_id":cert_id})
+        return jsonify({"success": True,"msg": "deleted certificate"})
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
-@app.route("/get_certificate_by_email/<group_id>", methods=["GET"])
+@app.route("/get_certificate_by_group/<group_id>", methods=["GET"])
+@jwt_required()
 def get_certificate_by_email(group_id):
-    data = certificates.find({"group_id": group_id})
+    try:
+        email=get_jwt_identity()
+        group=groups.find_one({"_id":group_id})['email']
+        if email != group:
+            return jsonify({'error': 'Unauthorized access'}), 403
+        data = certificates.find({"group_id": group_id})
+        certificate_list = list(data)
+        certificate_list.reverse()
+        return jsonify(certificate_list)
+    except Exception as e:
+        return jsonify({'error': str(e)})
     
-    certificate_list = list(data)
-    certificate_list.reverse()
-    return jsonify(certificate_list)
-    # if certificate_list:
-    #     return jsonify(certificate_list)
-    # else:
-    #     abort(404, description="No certificates found for this group_id")
+# to generate a certificate
+@app.route("/generate_certificate", methods=["POST"])
+@jwt_required()
+def generate_certificate():
+    try:
+        issuerEmail=get_jwt_identity()
+        data = request.json
+        username = data.get("username", None)
+        email = data.get("email", None)
+        g_id = data.get("_id", None)
+        groupEmail = groups.find_one({"_id":g_id})['email']
+        if issuerEmail != groupEmail:
+            return jsonify({'error': 'Unauthorized access'}), 403
+        generate_new_certificate(g_id,username,email)
+        groupData1 = certificates.find({"group_id": g_id})
+        certificate_list1=list(groupData1)
+        certificate_list1.reverse()
+        return jsonify({'success': True,'data': certificate_list1})
+    except Exception as e:
+            return jsonify({'error': str(e)})
     
-
 @app.route('/upload/<group_id>', methods=['POST'])
+@jwt_required()
 def upload_file(group_id):
     file = request.files['file']
-
     if file:
         try:
+            email=get_jwt_identity()
+            group=groups.find_one({"_id":group_id})['email']
+            if email != group:
+                return jsonify({'error': 'Unauthorized access'}), 403
             data = pd.read_csv(file)
-
             for index, row in data.iterrows():
                 username = row['Name']
                 email = row['Email']
                 group_id = group_id  
                 generate_new_certificate(groupid=group_id,email=email,username=username)
-            return jsonify({'message': 'Certificates generated successfully'})
-
+            groupData = certificates.find({"group_id": group_id})
+            certificate_list=list(groupData)
+            certificate_list.reverse()
+            return jsonify({'message': 'Certificates generated successfully','data': certificate_list})
         except Exception as e:
             return jsonify({'error': str(e)})
     else:
@@ -507,21 +532,8 @@ def certificates_by_email():
         data = request.json
         email = data.get("email", None)
         certs = certificates.find({"email": email})
-        # for c in certs:
-        #     cert_date_data=c["date"]
-        #     cert_date=datetime.strptime(cert_date_data,"%Y-%m-%d %H:%M:%S")
-        #     cert
         print(str(certs))
         return jsonify([i for i in certs])
-
-
-@app.route("/protected", methods=["GET"])
-@jwt_required()
-def protected():
-    # Access the identity of the current user with get_jwt_identity
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
-
 
 ############## START SERVER ###############
 if __name__ == "__main__":

@@ -17,8 +17,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (user.email === "" || user.password === "") {
+        toast.error("Please fill all the fields");
+        return;
+      }
       const response = await API.post("/login", user);
-      localStorage.setItem("access_token", response.data.token);
+      localStorage.setItem("access_token", `Bearer ${response.data.token}`);
       localStorage.setItem("user", user.email);
       toast.success("Login successful. Access granted.", {
         position: toast.POSITION.BOTTOM_RIGHT,
@@ -26,12 +30,7 @@ const Login = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
-      toast.error(
-        error.response?.status === 401
-          ? error.response.data.msg
-          : error.message,
-        { position: toast.POSITION.BOTTOM_RIGHT }
-      );
+      toast.error(error?.response?.data?.msg);
     }
   };
 

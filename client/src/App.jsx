@@ -3,7 +3,6 @@ import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import CertificateCredentials from "./pages/CertificateCredentials";
-import Protected from "./auth/Protected";
 import HomeLayout from "./pages/HomeLayout";
 import { Suspense, lazy } from "react";
 import Error from "./pages/Error";
@@ -42,8 +41,8 @@ const App = () => {
             <Route path="credentials/:id" element={<Credentials />} />
             <Route path="credentials" element={<Credentials />} />
           </Route>
-          <Route path="/*" element={<Navigate to="/404" />} />
-          <Route path="/404" element={<Error />} />
+          <Route path="/*" element={<Navigate to="/error" />} />
+          <Route path="/error" element={<Error />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

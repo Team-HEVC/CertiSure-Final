@@ -21,18 +21,21 @@ const Signup = () => {
     e.preventDefault();
 
     try {
+      if (
+        user.email === "" ||
+        user.password === "" ||
+        user.name === "" ||
+        user.number === ""
+      ) {
+        toast.error("Please fill all the fields");
+        return;
+      }
       const response = await API.post("/signup", user);
       console.log(response);
-      toast.success("Congratulations, your account has been created!", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
-      setTimeout(() => {
-        navigate("/login");
-      }, 3000);
+      toast.success("Congratulations, your account has been created!");
+      navigate("/login");
     } catch (err) {
-      toast.error(err.response.data.msg, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      toast.error(err?.response?.data?.msg);
       console.log(err);
     }
   };
@@ -41,7 +44,12 @@ const Signup = () => {
     <main className="w-full flex">
       <div className="relative flex-1 hidden items-center justify-center h-screen bg-gray-900 lg:flex">
         <div className="relative z-10 w-full max-w-md">
-          <img className="cursor-pointer" onClick={()=>navigate("/")} src="https://i.ibb.co/j5dVL0j/1.png" width={250} />
+          <img
+            className="cursor-pointer"
+            onClick={() => navigate("/")}
+            src="https://i.ibb.co/j5dVL0j/1.png"
+            width={250}
+          />
           <div className=" mt-16 space-y-3">
             <h3 className="text-white text-3xl font-bold">
               Get Started with Certisure

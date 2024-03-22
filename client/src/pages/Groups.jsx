@@ -7,6 +7,7 @@ import { FaPlus } from "react-icons/fa";
 import PlaceholderImage from "../assets/credential-placeholder.png";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../components/Dashboard/Pagination";
+import { toast } from "react-toastify";
 
 const Groups = () => {
   const navigator = useNavigate();
@@ -19,13 +20,28 @@ const Groups = () => {
       setLoading(true);
       const myEmail = localStorage.getItem("user");
       const response = await API.get(
-        `/get_user_groups/${myEmail}?page=${page}&per_page=${9}`
+        `/get_user_groups?page=${page}&per_page=${9}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("access_token"),
+          },
+        }
       );
       setData(response.data.groups);
       setTotalPageCount(response.data.total_pages);
       setLoading(false);
     } catch (err) {
-      navigator("/404");
+      console.log(err);
+      toast.error(err?.response?.data?.msg);
+      if (err.response.status === 401) {
+        navigator("/login");
+      } else {
+        navigator("/error", {
+          state: {
+            statusCode: err.response.status,
+          },
+        });
+      }
     }
   };
   const changePage = useCallback((page) => {
@@ -40,25 +56,24 @@ const Groups = () => {
       const data = { flag: resp };
       const response = await API.delete(`/delete_group/${id}`, {
         data,
+        headers: {
+          Authorization: localStorage.getItem("access_token"),
+        },
       });
-      toast.success(`Successfully deleted`, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-        autoClose: 3000,
-      });
-      refreshData();
+      toast.success(`Successfully deleted`);
+      getData(1);
+      setCurrentPage(1);
     } catch (err) {
-      toast.error(err?.response?.data?.msg, {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      toast.error(err?.response?.data?.msg);
       console.log(err);
     }
   }, []);
 
   return (
     <div className="flex text-black flex-col px-5 lg:px-12 xl:px-16 2xl:px-20 pt-4 gap-4 bg-[#F0F2F5]">
-      <div className="h-28 rounded-lg items-end bg-white flex">
-        <div className="w-[10%]] font-bold text-xl pl-5 pb-6">Groups</div>
-        <div className="w-[100%] items-end justify-end pr-5 pb-6 flex">
+      <div className="rounded-lg px-5 bg-white flex py-3 justify-between items-center">
+        <div className="w-[10%] font-bold text-xl ">Groups</div>
+        <div className="w-[100%] items-end justify-end flex">
           <button
             onClick={() => document.getElementById("my_modal_1").showModal()}
             className="px-3 py-1.5 gap-1 flex justify-center items-center text-sm text-white duration-150 bg-[#1677FF] font-medium pb-2 rounded-lg hover:bg-indigo-500 active:shadow-lg "
@@ -103,11 +118,13 @@ const Groups = () => {
             </div>
           )}
         </div>
-        <Pagination
-          onPageChange={changePage}
-          pageIndex={currentPage - 1}
-          totalPageCount={totalPageCount}
-        />
+        {data.length > 0 && (
+          <Pagination
+            onPageChange={changePage}
+            pageIndex={currentPage - 1}
+            totalPageCount={totalPageCount}
+          />
+        )}
       </div>
       <DialogBox1 />
     </div>

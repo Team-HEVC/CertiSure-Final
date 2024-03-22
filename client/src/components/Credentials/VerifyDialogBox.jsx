@@ -1,7 +1,7 @@
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useCallback, useEffect, useState } from "react";
-import ChangingProgressProvider from "../ChangingProgressProvider";
+import ChangingProgressProvider from "./ChangingProgressProvider";
 
 const VerifyDialogBox = ({ isOpen, onClose, title, recipient }) => {
   const [progressStarted, setProgressStarted] = useState({
