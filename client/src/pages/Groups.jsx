@@ -34,6 +34,7 @@ const Groups = () => {
       console.log(err);
       toast.error(err?.response?.data?.msg);
       if (err.response.status === 401) {
+        localStorage.removeItem("access_token");
         navigator("/login");
       } else {
         navigator("/error", {
