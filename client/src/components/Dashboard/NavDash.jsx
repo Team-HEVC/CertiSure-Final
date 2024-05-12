@@ -1,27 +1,51 @@
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable no-unused-vars */
-// import { motion } from "framer-motion"
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-// import {svg} from "../../assets/Acamedic-Achievement-tempate-p2adif7uymj5vx15nb5c0isw92a5epu13ix5kmldeq.webp";
+import { Link } from "react-router-dom";
+import API from "../../Axios.js";
 
 const NavDash = () => {
   const [upgrade, setUpgrade] = useState("Upgrade");
-  const navigate = useNavigate();
   const [selected, setSelected] = useState(0);
   const handleRadioChange = (event) => {
     setSelected(parseInt(event.target.value));
   };
 
-  const handleSubmitt = () => {
-    if (selected === 0) {
-      window.open("https://buy.stripe.com/test_cN2eVzeSA922dS85kn", "_blank");
-    } else {
-      window.open("https://buy.stripe.com/test_cN28xb25OguuaFWaEF", "_blank");
+  const handleSubmitt = async () => {
+    try {
+      const res = await API.post(
+        `/create-checkout-session`,
+        {},
+        {
+          headers: {
+            Authorization: `${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      if (res.status === 200) {
+        console.log(res);
+        window.location.href = res.data;
+      }
+    } catch (error) {
+      console.log(error);
     }
-    setState(false);
-    setUpgrade("Renew");
   };
+
+  const handleUpgrade = async () => {
+    const userData = await API.get("/get_user", {
+      headers: {
+        Authorization: `${localStorage.getItem("access_token")}`,
+      },
+    });
+
+    console.log(userData);
+
+    if (userData.data.subscription) {
+      setUpgrade("Premium");
+    }
+  };
+
+  useEffect(() => {
+    handleUpgrade();
+  }, []);
 
   const radios = [
     {
@@ -166,9 +190,13 @@ const NavDash = () => {
       </div>
       <div className="navbar-end gap-3 mr-4 ">
         <Link
-          onClick={() => setState(true)}
+          onClick={() => {
+            if (upgrade === "Upgrade") {
+              setState(true);
+            }
+          }}
           to=""
-          className="bg-[#FA8C16] text-white hover:text-black border-none hover:bg-slate-300 px-4 py-2 rounded-lg duration-150  active:shadow-lg"
+          className="bg-[#FA8C16] font-semibold text-white hover:text-black border-none hover:bg-slate-300 px-4 py-2 rounded-lg duration-150  active:shadow-lg"
         >
           {upgrade}
         </Link>
@@ -231,9 +259,9 @@ const NavDash = () => {
                             <svg className="w-2.5 h-2.5" viewBox="0 0 12 10">
                               <polyline
                                 fill="none"
-                                stroke-width="2px"
+                                strokeWidth="2px"
                                 stroke="currentColor"
-                                stroke-dasharray="16px"
+                                strokeDasharray="16px"
                                 points="1.5 6 4.5 9 10.5 1"
                               ></polyline>
                             </svg>
@@ -266,7 +294,7 @@ const NavDash = () => {
         <div className="dropdown dropdown-end">
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full">
-              <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+              <img src="https://res.cloudinary.com/dp9kpxfpa/image/upload/v1715363591/undraw_Male_avatar_g98d_p7ozq8.png" />
             </div>
           </label>
           <ul
@@ -301,39 +329,3 @@ const NavDash = () => {
 };
 
 export default NavDash;
-
-// export default () => {
-
-//     return (
-//         <div className="max-w-md mx-auto px-4">
-//             <h2 className="text-gray-800 font-medium">Select your payment method</h2>
-//             <ul className="mt-6 space-y-3">
-//                 {
-//                     radios.map((item, idx) => (
-//                         <li key={idx}>
-//                             <label htmlFor={item.name} className="block relative">
-//                                 <input id={item.name} type="radio" defaultChecked={idx == 1 ? true : false} name="payment" className="sr-only peer" />
-//                                 <div className="w-full flex gap-x-3 items-start p-4 cursor-pointer rounded-lg border bg-white shadow-sm ring-indigo-600 peer-checked:ring-2 duration-200">
-//                                     <div className="flex-none">
-//                                         {item.icon}
-//                                     </div>
-//                                     <div>
-//                                         <h3 className="leading-none text-gray-800 font-medium pr-3">
-//                                             {item.name}
-//                                         </h3>
-//                                         <p className="mt-1 text-sm text-gray-600">
-//                                             {item.description}
-//                                         </p>
-//                                     </div>
-//                                 </div>
-//                                 <div className="absolute top-4 right-4 flex-none flex items-center justify-center w-4 h-4 rounded-full border peer-checked:bg-indigo-600 text-white peer-checked:text-white duration-200">
-//                                     <svg className="w-2.5 h-2.5" viewBox="0 0 12 10"><polyline fill="none" stroke-width="2px" stroke="currentColor" stroke-dasharray="16px" points="1.5 6 4.5 9 10.5 1"></polyline></svg>
-//                                 </div>
-//                             </label>
-//                         </li>
-//                     ))
-//                 }
-//             </ul>
-//         </div>
-//     )
-// }
