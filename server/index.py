@@ -650,8 +650,8 @@ def create_checkout_session():
             },
         ],
         mode="payment",
-        success_url="http://localhost:5174/dashboard",
-        cancel_url="http://localhost:5174/error",
+        success_url="https://certisure.vercel.app/dashboard",
+        cancel_url="https://certisure.vercel.app/error",
         metadata={"user_email": email},
     )
 
