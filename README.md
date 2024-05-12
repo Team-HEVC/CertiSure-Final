@@ -6,7 +6,7 @@ Getting Started
 
 Prerequisites
 
-- Node.js must be installed on your machine.
+- Node.js must be installed on your machine
 
 Installation
 
@@ -52,7 +52,7 @@ Installation
    python -m venv venv
 
 4. Activate the Virtual Environment
-   
+
    .\venv\Scripts\activate
 
 5. Install project dependencies using pip:
