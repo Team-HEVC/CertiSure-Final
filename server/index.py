@@ -697,11 +697,11 @@ def webhook():
         )
 
         # Add the subscription to the user's profile
-        subscription = {
-            'type': 'premium',
-            'days_remaining': 30
-        }
-        user['subscription'] = subscription
+        # subscription = {
+        #     'type': 'premium',
+        #     'days_remaining': 30
+        # }
+        # user['subscription'] = subscription
 
     return jsonify({"status": "success"}), 200
 
