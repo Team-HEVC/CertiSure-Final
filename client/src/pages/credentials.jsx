@@ -138,7 +138,7 @@ const Credentials = () => {
   ];
 
   return (
-    <div className="flex flex-col px-4 md:px-24 py-4 gap-4 text-black bg-[#F0F2F5]">
+    <div className="flex min-h-screen flex-col px-4 md:px-24 py-4 gap-4 text-black bg-[#F0F2F5]">
       <div className="rounded-lg bg-white flex justify-between items-center py-3 px-5 ">
         <div className="w-[10%] font-bold text-xl">Credentials</div>
         <div className="w-[100%] items-end justify-end flex">

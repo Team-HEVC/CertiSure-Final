@@ -34,9 +34,10 @@ const FooterDash = () => {
       <div className="max-w-lg sm:mx-auto sm:text-center">
         <img src="https://i.ibb.co/JdMdT4Z/1.png" className="w-48 sm:mx-auto" />
         <p className="leading-relaxed mt-2 text-[15px]">
-          Lorem Ipsum has been the industrys standard dummy text ever since the
-          1500s, when an unknown printer took a galley of type and scrambled it
-          to make a type specimen book.
+          Our platform is designed to make the process of
+          generating certificates as easy as possible. With our
+          platform, you can easily generate certificates for
+          your business, and we will handle the rest.
         </p>
       </div>
       <ul className="items-center justify-center mt-8 space-y-5 sm:flex sm:space-x-4 sm:space-y-0">

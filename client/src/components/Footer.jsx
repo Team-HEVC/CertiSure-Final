@@ -72,8 +72,8 @@ const Footer = () => {
           <div className="max-w-xs">
             <img src="https://i.ibb.co/JdMdT4Z/1.png" className="w-48" />
             <p className="leading-relaxed mt-2 text-[15px]">
-              Lorem Ipsum has been the industry's standard dummy text ever since
-              the 1500s.
+              Our platform is designed to make the process of
+              generating certificates as easy as possible. 
             </p>
           </div>
           <form onSubmit={(e) => e.preventDefault()}>
